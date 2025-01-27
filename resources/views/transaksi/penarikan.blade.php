@@ -28,14 +28,16 @@
                         </form>
 
                         <!-- Form Penarikan -->
-                        <form action="{{ route('transaksi.penarikan.store') }}" method="POST">
+                        <form action="{{ route('transaksi.penarikan.store') }}" method="POST" id="formPenarikan">
                             @csrf
                             <div class="mb-3">
                                 <label for="buku_tabungan_id" class="form-label">Buku Tabungan</label>
                                 <select name="buku_tabungan_id" id="buku_tabungan_id" class="form-select" required>
                                     <option value="">Pilih Buku Tabungan</option>
                                     @foreach ($bukuTabungans as $buku)
-                                        <option value="{{ $buku->id }}">
+                                        <option value="{{ $buku->id }}" 
+                                            data-simpanan="{{ $buku->totalSimpanan - $buku->totalPenarikanSimpanan }}"
+                                            data-cicilan="{{ $buku->totalCicilan - $buku->totalPenarikanCicilan }}">
                                             {{ $buku->nomor_urut }} - {{ $buku->siswa->name }}
                                         </option>
                                     @endforeach
@@ -44,11 +46,10 @@
 
                             <div class="mb-3">
                                 <label for="jumlah" class="form-label">Jumlah Penarikan (Rp)</label>
-                                <input type="number" name="jumlah" class="form-control" step="0.01" required>
+                                <input type="number" name="jumlah" id="jumlah" class="form-control" step="0.01" required>
+                                <div class="invalid-feedback" id="saldoError"></div>
                             </div>
-                    </div>
 
-                    <div class="col-lg-6">
                             <div class="mb-3">
                                 <label class="form-label">Sumber Penarikan</label>
                                 <div class="form-check">
@@ -81,3 +82,55 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('formPenarikan');
+    const bukuTabunganSelect = document.getElementById('buku_tabungan_id');
+    const jumlahInput = document.getElementById('jumlah');
+    const sumberInputs = document.getElementsByName('sumber_penarikan');
+    const saldoError = document.getElementById('saldoError');
+
+    function checkBalance() {
+        const selectedOption = bukuTabunganSelect.options[bukuTabunganSelect.selectedIndex];
+        const saldoSimpanan = parseFloat(selectedOption.dataset.simpanan) || 0;
+        const saldoCicilan = parseFloat(selectedOption.dataset.cicilan) || 0;
+        const jumlah = parseFloat(jumlahInput.value) || 0;
+        let sumberPenarikan = '';
+
+        sumberInputs.forEach(input => {
+            if (input.checked) {
+                sumberPenarikan = input.value;
+            }
+        });
+
+        const saldo = sumberPenarikan === 'simpanan' ? saldoSimpanan : saldoCicilan;
+        
+        if (jumlah > saldo) {
+            jumlahInput.classList.add('is-invalid');
+            saldoError.textContent = `Saldo ${sumberPenarikan} tidak mencukupi. Saldo tersedia: Rp ${new Intl.NumberFormat('id-ID').format(saldo)}`;
+            return false;
+        }
+
+        jumlahInput.classList.remove('is-invalid');
+        saldoError.textContent = '';
+        return true;
+    }
+
+    // Check balance when amount or withdrawal source changes
+    jumlahInput.addEventListener('input', checkBalance);
+    sumberInputs.forEach(input => {
+        input.addEventListener('change', checkBalance);
+    });
+    bukuTabunganSelect.addEventListener('change', checkBalance);
+
+    // Prevent form submission if balance is insufficient
+    form.addEventListener('submit', function(e) {
+        if (!checkBalance()) {
+            e.preventDefault();
+        }
+    });
+});
+</script>
+@endpush

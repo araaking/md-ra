@@ -142,20 +142,40 @@ class TransaksiController extends Controller
 
         $kelas = Kelas::all();
         $selectedKelasId = $request->input('kelas_id');
-        $bukuTabungans = BukuTabungan::query()
-            ->where('tahun_ajaran_id', $tahunAktif->id) // Filter tahun ajaran aktif
+        
+        // Build query
+        $query = BukuTabungan::query()
+            ->where('tahun_ajaran_id', $tahunAktif->id)
             ->whereHas('siswa', function ($query) {
-                $query->where('status', 'Aktif'); // Hanya siswa aktif
+                $query->where('status', 'Aktif');
             });
 
-        // Filter berdasarkan kelas jika dipilih
+        // Filter by class if selected
         if ($selectedKelasId) {
-            $bukuTabungans->whereHas('siswa', function ($query) use ($selectedKelasId) {
+            $query->whereHas('siswa', function ($query) use ($selectedKelasId) {
                 $query->where('class_id', $selectedKelasId);
             });
         }
 
-        $bukuTabungans = $bukuTabungans->with('siswa')->get();
+        // Get data with relationships
+        $bukuTabungans = $query->with(['siswa', 'transaksis'])->get()
+            ->map(function ($buku) {
+                // Calculate total savings and withdrawals
+                $buku->totalSimpanan = $buku->transaksis->where('jenis', 'simpanan')->sum('jumlah');
+                $buku->totalPenarikanSimpanan = $buku->transaksis
+                    ->where('jenis', 'penarikan')
+                    ->where('sumber_penarikan', 'simpanan')
+                    ->sum('jumlah');
+            
+                // Calculate total installments and withdrawals
+                $buku->totalCicilan = $buku->transaksis->where('jenis', 'cicilan')->sum('jumlah');
+                $buku->totalPenarikanCicilan = $buku->transaksis
+                    ->where('jenis', 'penarikan')
+                    ->where('sumber_penarikan', 'cicilan')
+                    ->sum('jumlah');
+            
+                return $buku;
+            });
 
         return view('transaksi.penarikan', compact(
             'kelas',
