@@ -24,7 +24,17 @@
                                     <p class="mb-0 text-dark fs-15">Total Simpanan</p>
                                 </div>
                                 <div class="d-flex justify-content-between align-items-center">
-                                    <h3 class="mb-0 fs-22 text-dark me-3">Rp {{ number_format($totalSimpanan, 0, ',', '.') }}</h3>
+                                    @php
+                                        $totalPenarikanSimpanan = App\Models\Transaksi::whereHas('bukuTabungan', function($query) use ($tahunAjaran) {
+                                            $query->where('tahun_ajaran_id', $tahunAjaran->id);
+                                        })
+                                        ->where('jenis', 'penarikan')
+                                        ->where('sumber_penarikan', 'simpanan')
+                                        ->sum('jumlah');
+                                        
+                                        $saldoSimpanan = $totalSimpanan - $totalPenarikanSimpanan;
+                                    @endphp
+                                    <h3 class="mb-0 fs-22 text-dark me-3">Rp {{ number_format($saldoSimpanan, 0, ',', '.') }}</h3>
                                 </div>
                             </div>
                         </div>
@@ -47,7 +57,17 @@
                                     <p class="mb-0 text-dark fs-15">Total Cicilan</p>
                                 </div>
                                 <div class="d-flex justify-content-between align-items-center">
-                                    <h3 class="mb-0 fs-22 text-dark me-3">Rp {{ number_format($totalCicilan, 0, ',', '.') }}</h3>
+                                    @php
+                                        $totalPenarikanCicilan = App\Models\Transaksi::whereHas('bukuTabungan', function($query) use ($tahunAjaran) {
+                                            $query->where('tahun_ajaran_id', $tahunAjaran->id);
+                                        })
+                                        ->where('jenis', 'penarikan')
+                                        ->where('sumber_penarikan', 'cicilan')
+                                        ->sum('jumlah');
+                                        
+                                        $saldoCicilan = $totalCicilan - $totalPenarikanCicilan;
+                                    @endphp
+                                    <h3 class="mb-0 fs-22 text-dark me-3">Rp {{ number_format($saldoCicilan, 0, ',', '.') }}</h3>
                                 </div>
                             </div>
                         </div>
@@ -111,11 +131,12 @@
                         <table class="table table-bordered table-striped mb-0">
                             <thead>
                                 <tr>
-                                    <th>ID</th>
+                                    <th>No</th>
                                     <th>Buku Tabungan</th>
                                     <th>Nama Siswa</th>
                                     <th>Kelas</th>
                                     <th>Jenis</th>
+                                    <th>Sumber Penarikan</th>
                                     <th>Jumlah</th>
                                     <th>Tanggal</th>
                                     <th>Keterangan</th>
@@ -123,13 +144,20 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse ($transaksis as $transaksi)
+                                @forelse ($transaksis as $index => $transaksi)
                                 <tr>
-                                    <td>{{ $transaksi->id }}</td>
+                                    <td>{{ $transaksis->firstItem() + $index }}</td>
                                     <td>{{ $transaksi->bukuTabungan->nomor_urut }}</td>
                                     <td>{{ $transaksi->bukuTabungan->siswa->name }}</td>
                                     <td>{{ $transaksi->bukuTabungan->siswa->kelas->name }}</td>
                                     <td>{{ ucfirst($transaksi->jenis) }}</td>
+                                    <td>
+                                        @if($transaksi->jenis === 'penarikan')
+                                            {{ ucfirst($transaksi->sumber_penarikan) }}
+                                        @else
+                                            -
+                                        @endif
+                                    </td>
                                     <td>{{ number_format($transaksi->jumlah, 0, ',', '.') }}</td>
                                     <td>{{ $transaksi->tanggal->format('d/m/Y H:i:s') }}</td>
                                     <td>{{ $transaksi->keterangan }}</td>
@@ -156,7 +184,7 @@
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="9" class="text-center">Tidak ada data transaksi.</td>
+                                    <td colspan="10" class="text-center">Tidak ada data transaksi.</td>
                                 </tr>
                                 @endforelse
                             </tbody>

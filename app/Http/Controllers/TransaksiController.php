@@ -47,7 +47,8 @@ class TransaksiController extends Controller
             'transaksis',
             'totalSimpanan',
             'totalCicilan',
-            'totalPenarikan'
+            'totalPenarikan',
+            'tahunAjaran'  // Add this line
         ));
     }
 
@@ -173,18 +174,27 @@ class TransaksiController extends Controller
             'sumber_penarikan'  => 'required|in:simpanan,cicilan',
             'keterangan'        => 'nullable|string|max:255'
         ]);
-
-        // Cek saldo sumber penarikan
+    
+        // Get the current total based on withdrawal source
         $totalSumber = Transaksi::where('buku_tabungan_id', $request->buku_tabungan_id)
             ->where('jenis', $request->sumber_penarikan)
             ->sum('jumlah');
-
-        // Validasi saldo
-        if ($totalSumber < $request->jumlah) {
-            return back()->with('error', 'Saldo ' . $request->sumber_penarikan . ' tidak mencukupi!');
+    
+        // Get total withdrawals for this source
+        $totalPenarikan = Transaksi::where('buku_tabungan_id', $request->buku_tabungan_id)
+            ->where('jenis', 'penarikan')
+            ->where('sumber_penarikan', $request->sumber_penarikan)
+            ->sum('jumlah');
+    
+        // Calculate available balance
+        $saldoTersedia = $totalSumber - $totalPenarikan;
+    
+        // Validate available balance
+        if ($saldoTersedia < $request->jumlah) {
+            return back()->with('error', 'Saldo ' . $request->sumber_penarikan . ' tidak mencukupi! Saldo tersedia: ' . number_format($saldoTersedia, 2));
         }
-
-        // Simpan transaksi penarikan
+    
+        // Save withdrawal transaction
         Transaksi::create([
             'buku_tabungan_id'  => $request->buku_tabungan_id,
             'jenis'             => 'penarikan',
@@ -193,7 +203,7 @@ class TransaksiController extends Controller
             'sumber_penarikan'  => $request->sumber_penarikan,
             'keterangan'        => $request->keterangan
         ]);
-
+    
         return redirect()->route('transaksi.index')
             ->with('success', 'Penarikan berhasil dicatat!');
     }
