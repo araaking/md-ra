@@ -216,6 +216,20 @@
                                                title="Detail">
                                                 <i class="mdi mdi-eye-outline fs-14 text-info"></i>
                                             </a>
+                                            <!-- Preview Button -->
+                                            <a href="{{ route('savings.preview', $buku->id) }}" 
+                                               class="btn btn-icon btn-sm bg-warning-subtle"
+                                               data-bs-toggle="tooltip" 
+                                               title="Preview PDF">
+                                                <i class="mdi mdi-file-eye-outline fs-14 text-warning"></i>
+                                            </a>
+                                            <!-- Download Button -->
+                                            <a href="{{ route('savings.export-pdf', $buku->id) }}" 
+                                               class="btn btn-icon btn-sm bg-danger-subtle"
+                                               data-bs-toggle="tooltip" 
+                                               title="Download PDF">
+                                                <i class="mdi mdi-file-pdf-box fs-14 text-danger"></i>
+                                            </a>
                                         </div>
                                     </td>
                                 </tr>

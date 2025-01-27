@@ -12,7 +12,7 @@ use App\Models\Transaksi;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
-use Barryvdh\DomPDF\Facade\Pdf;
+// Remove PDF facade import
 use Carbon\Carbon;
 
 class PembayaranController extends Controller
@@ -106,53 +106,15 @@ class PembayaranController extends Controller
         }
     }
 
-    public function exportPDF($siswa_id)
-    {
-        $siswa = Siswa::with(['kelas', 'bukuTabungans.transaksis', 'pembayarans'])
-            ->findOrFail($siswa_id);
+    // Remove entire exportPDF method
 
-        $tahunAktif = TahunAjaran::where('is_active', true)->first();
-        
-        // Hitung total tabungan
-        $totalTabungan = $siswa->bukuTabungans->sum(function($buku) {
-            return $buku->transaksis->where('jenis', 'simpanan')->sum('jumlah');
-        });
+    // Remove these helper methods as they're only used by exportPDF:
+    // - hitungAdminFee
+    // - hitungBulanTertunggak
+    // - hitungTunggakanTahunLalu
+    // - hitungPinjaman
 
-        // Hitung komponen
-        $adminFeePercentage = $this->hitungAdminFee($siswa->category, false);
-        $adminFee = $totalTabungan * ($adminFeePercentage / 100);
-        
-        $potongan = [
-            'IKK' => BiayaSekolah::getBiaya('IKK', $siswa->category),
-            'SPP' => BiayaSekolah::getBiaya('SPP', $siswa->category) * $this->hitungBulanTertunggak($siswa),
-            'Uang_Pangkal' => BiayaSekolah::getBiaya('Uang Pangkal', $siswa->category),
-            'THB' => BiayaSekolah::getBiaya('THB', $siswa->category),
-            'Foto' => BiayaSekolah::getBiaya('Foto', $siswa->category),
-            'Raport' => BiayaSekolah::getBiaya('Raport', $siswa->category),
-            'UAM' => BiayaSekolah::getBiaya('UAM', $siswa->category),
-            'Tunggakan' => $this->hitungTunggakanTahunLalu($siswa),
-            'Pinjaman' => $this->hitungPinjaman($siswa)
-        ];
-
-        $totalPotongan = array_sum($potongan);
-        $sisaTabungan = ($totalTabungan - $adminFee) - $totalPotongan;
-
-        $pdf = Pdf::loadView('pembayaran.export-pdf', [
-            'siswa' => $siswa,
-            'tahunAktif' => $tahunAktif,
-            'totalTabungan' => $totalTabungan,
-            'adminFee' => $adminFee,
-            'adminFeePercentage' => $adminFeePercentage,
-            'potongan' => $potongan,
-            'totalPotongan' => $totalPotongan,
-            'sisaTabungan' => $sisaTabungan
-        ]);
-
-        return $pdf->download("Laporan-Keuangan-{$siswa->name}.pdf");
-    }
-
-    // ============ HELPER METHODS ============
-    
+    // Keep these helper methods as they're used by store method:
     private function validateStudentCategory(Siswa $siswa, $jenisBiaya)
     {
         $invalidCases = [

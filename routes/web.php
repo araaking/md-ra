@@ -9,6 +9,7 @@ use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\BiayaSekolahController;
 use App\Http\Controllers\PembayaranController;
+use App\Http\Controllers\SavingsExportController;
 use Illuminate\Support\Facades\Route;
 
 // Route utama
@@ -64,8 +65,14 @@ Route::middleware('auth')->group(function () {
     
     Route::resource('pembayaran', PembayaranController::class);
     
-    Route::get('/pembayaran/export-pdf/{siswa_id}', [PembayaranController::class, 'exportPDF'])
-    ->name('pembayaran.export-pdf');
+    // Remove the export-pdf route
+    
+    // Savings Export Routes
+    Route::get('/savings/preview/{id}', [SavingsExportController::class, 'preview'])
+        ->name('savings.preview');
+    Route::get('/savings/export-pdf/{id}', [SavingsExportController::class, 'exportPDF'])
+        ->name('savings.export-pdf');
+
 });
 
 require __DIR__.'/auth.php';
