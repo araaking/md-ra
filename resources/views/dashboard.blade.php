@@ -152,68 +152,92 @@
                         <table class="table table-traffic mb-0">
                             <thead>
                                 <tr>
+                                    <th>No</th>
                                     <th>Nomor Tabungan</th>
-                                    <th>Nama</th>
+                                    <th>Nama Siswa</th>
                                     <th>Kelas</th>
-                                    <th>Total Tabungan</th>
+                                    <th>Total Simpanan</th>
+                                    <th>Total Penarikan Simpanan</th>
+                                    <th>Saldo Simpanan</th>
                                     <th>Total Cicilan</th>
+                                    <th>Total Penarikan Cicilan</th>
+                                    <th>Saldo Cicilan</th>
                                     <th>Total Keseluruhan</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse ($transaksis as $transaksi)
+                                @forelse ($bukuTabungans as $index => $buku)
                                 <tr>
+                                    <td>{{ $bukuTabungans->firstItem() + $index }}</td>
                                     <td>
                                         <a href="javascript:void(0);" class="text-dark">
-                                            {{ $transaksi->nomor_tabungan ?? '-' }}
+                                            {{ $buku->nomor_urut }}
                                         </a>
                                     </td>
                                     <td>
                                         <p class="mb-0 fw-medium fs-14">
-                                            {{ $transaksi->nama ?? '-' }}
+                                            {{ $buku->siswa->name }}
                                         </p>
                                     </td>
                                     <td>
                                         <p class="mb-0 text-muted">
-                                            {{ $transaksi->kelas ?? '-' }}
+                                            {{ $buku->siswa->kelas->name }}
                                         </p>
                                     </td>
                                     <td>
                                         <p class="mb-0 text-muted">
-                                            {{ number_format($transaksi->total_tabungan, 0, ',', '.') }}
+                                            Rp {{ number_format($buku->total_simpanan, 0, ',', '.') }}
                                         </p>
                                     </td>
                                     <td>
                                         <p class="mb-0 text-muted">
-                                            {{ number_format($transaksi->total_cicilan, 0, ',', '.') }}
+                                            Rp {{ number_format($buku->total_penarikan_simpanan, 0, ',', '.') }}
                                         </p>
                                     </td>
                                     <td>
                                         <p class="mb-0 text-muted">
-                                            {{ number_format($transaksi->total_keseluruhan, 0, ',', '.') }}
+                                            Rp {{ number_format($buku->total_simpanan - $buku->total_penarikan_simpanan, 0, ',', '.') }}
                                         </p>
                                     </td>
                                     <td>
-                                        <a href="{{ route('transaksi.edit', ['transaksi' => $transaksi->id]) }}"
-                                           class="btn btn-icon btn-sm bg-primary-subtle me-1"
-                                           data-bs-toggle="tooltip" title="Edit">
-                                            <i class="mdi mdi-pencil-outline fs-14 text-primary"></i>
-                                        </a>
-                                        <form action="{{ route('transaksi.destroy', ['transaksi' => $transaksi->id]) }}" method="POST" class="d-inline">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit"
-                                                    class="btn btn-icon btn-sm bg-danger-subtle"
-                                                    data-bs-toggle="tooltip" title="Delete">
-                                                <i class="mdi mdi-delete fs-14 text-danger"></i>
-                                            </button>
-                                        </form>
+                                        <p class="mb-0 text-muted">
+                                            Rp {{ number_format($buku->total_cicilan, 0, ',', '.') }}
+                                        </p>
+                                    </td>
+                                    <td>
+                                        <p class="mb-0 text-muted">
+                                            Rp {{ number_format($buku->total_penarikan_cicilan, 0, ',', '.') }}
+                                        </p>
+                                    </td>
+                                    <td>
+                                        <p class="mb-0 text-muted">
+                                            Rp {{ number_format($buku->total_cicilan - $buku->total_penarikan_cicilan, 0, ',', '.') }}
+                                        </p>
+                                    </td>
+                                    <td>
+                                        <p class="mb-0 text-muted">
+                                            Rp {{ number_format(
+                                                ($buku->total_simpanan - $buku->total_penarikan_simpanan) + 
+                                                ($buku->total_cicilan - $buku->total_penarikan_cicilan), 
+                                                0, ',', '.'
+                                            ) }}
+                                        </p>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex gap-1">
+                                            <a href="{{ route('buku-tabungan.show', $buku->id) }}" 
+                                               class="btn btn-icon btn-sm bg-info-subtle"
+                                               data-bs-toggle="tooltip" 
+                                               title="Detail">
+                                                <i class="mdi mdi-eye-outline fs-14 text-info"></i>
+                                            </a>
+                                        </div>
                                     </td>
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="7" class="text-center">Tidak ada data tabungan.</td>
+                                    <td colspan="12" class="text-center">Tidak ada data tabungan.</td>
                                 </tr>
                                 @endforelse
                             </tbody>
@@ -225,15 +249,15 @@
                     <div class="row align-items-center">
                         <div class="col-sm">
                             <div class="text-block text-center text-sm-start">
-                                @if ($transaksis->count() > 0)
+                                @if ($bukuTabungans->count() > 0)
                                 <span class="fw-medium">
-                                    Showing {{ $transaksis->count() }} of {{ $transaksis->total() }}
+                                    Showing {{ $bukuTabungans->count() }} of {{ $bukuTabungans->total() }}
                                 </span>
                                 @endif
                             </div>
                         </div>
                         <div class="col-sm-auto mt-3 mt-sm-0">
-                            {{ $transaksis->links('pagination::bootstrap-4') }}
+                            {{ $bukuTabungans->links('pagination::bootstrap-4') }}
                         </div>
                     </div>
                 </div>
