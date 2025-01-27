@@ -156,13 +156,11 @@
                                     <th>Nomor Tabungan</th>
                                     <th>Nama Siswa</th>
                                     <th>Kelas</th>
-                                    <th>Total Simpanan</th>
-                                    <th>Total Penarikan Simpanan</th>
-                                    <th>Saldo Simpanan</th>
-                                    <th>Total Cicilan</th>
-                                    <th>Total Penarikan Cicilan</th>
+                                    <th>Jumlah Tabungan</th>
+                                    <th>Pinjaman Tabungan</th>
+                                    <th>Jumlah Cicilan</th>
+                                    <th>Pinjaman Cicilan</th>
                                     <th>Saldo Cicilan</th>
-                                    <th>Total Keseluruhan</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -197,11 +195,6 @@
                                     </td>
                                     <td>
                                         <p class="mb-0 text-muted">
-                                            Rp {{ number_format($buku->total_simpanan - $buku->total_penarikan_simpanan, 0, ',', '.') }}
-                                        </p>
-                                    </td>
-                                    <td>
-                                        <p class="mb-0 text-muted">
                                             Rp {{ number_format($buku->total_cicilan, 0, ',', '.') }}
                                         </p>
                                     </td>
@@ -213,15 +206,6 @@
                                     <td>
                                         <p class="mb-0 text-muted">
                                             Rp {{ number_format($buku->total_cicilan - $buku->total_penarikan_cicilan, 0, ',', '.') }}
-                                        </p>
-                                    </td>
-                                    <td>
-                                        <p class="mb-0 text-muted">
-                                            Rp {{ number_format(
-                                                ($buku->total_simpanan - $buku->total_penarikan_simpanan) + 
-                                                ($buku->total_cicilan - $buku->total_penarikan_cicilan), 
-                                                0, ',', '.'
-                                            ) }}
                                         </p>
                                     </td>
                                     <td>
@@ -237,7 +221,7 @@
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="12" class="text-center">Tidak ada data tabungan.</td>
+                                    <td colspan="10" class="text-center">Tidak ada data tabungan.</td>
                                 </tr>
                                 @endforelse
                             </tbody>
