@@ -20,6 +20,30 @@ class BiayaSekolah extends Model
         'keterangan'
     ];
 
+    public static function needsStudentCategory($jenisBiaya)
+    {
+        return in_array($jenisBiaya, ['SPP', 'IKK', 'Uang Pangkal']);
+    }
+
+    public static function needsClassLevel($jenisBiaya)
+    {
+        return in_array($jenisBiaya, ['THB', 'UAM', 'Foto']);
+    }
+
+    public static function getAvailableClasses($jenisBiaya)
+    {
+        switch ($jenisBiaya) {
+            case 'THB':
+                return ['1', '2', '3', '4', '5', '6'];
+            case 'UAM':
+                return ['6'];
+            case 'Foto':
+                return ['TK', '6'];
+            default:
+                return [];
+        }
+    }
+
     public function tahunAjaran()
     {
         return $this->belongsTo(TahunAjaran::class);

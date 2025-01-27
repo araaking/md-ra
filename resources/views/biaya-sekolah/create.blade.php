@@ -25,19 +25,25 @@
                                     <option value="Wisuda">Wisuda</option>
                                     <option value="Uang Pangkal">Uang Pangkal</option>
                                     <option value="Raport">Raport</option>
-                                    <option value="Seragam">Seragam</option>
                                     <option value="Foto">Foto</option>
                                 </select>
                             </div>
 
                             <div class="mb-3" id="kategoriField" style="display: none;">
                                 <label for="kategori_siswa" class="form-label">Kategori Siswa</label>
-                                <select name="kategori_siswa" class="form-select">
+                                <select name="kategori_siswa" id="kategori_siswa" class="form-select">
                                     <option value="">Pilih Kategori</option>
                                     <option value="Anak Guru">Anak Guru</option>
                                     <option value="Anak Yatim">Anak Yatim</option>
                                     <option value="Kakak Beradik">Kakak Beradik</option>
                                     <option value="Anak Normal">Anak Normal</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3" id="tingkatField" style="display: none;">
+                                <label for="tingkat" class="form-label">Tingkat Kelas</label>
+                                <select name="tingkat" id="tingkat" class="form-select">
+                                    <option value="">Pilih Tingkat</option>
                                 </select>
                             </div>
                         </div>
@@ -74,12 +80,37 @@ document.getElementById('jenis_biaya').addEventListener('change', function() {
     const jenis = this.value;
     const kategoriField = document.getElementById('kategoriField');
     const tingkatField = document.getElementById('tingkatField');
+    const tingkatSelect = document.getElementById('tingkat');
     
-    // Tampilkan kategori hanya untuk SPP dan IKK
-    kategoriField.style.display = (jenis === 'SPP' || jenis === 'IKK') ? 'block' : 'none';
+    // Reset fields
+    kategoriField.style.display = 'none';
+    tingkatField.style.display = 'none';
     
-    // Tampilkan tingkat hanya untuk THB
-    tingkatField.style.display = (jenis === 'THB') ? 'block' : 'none';
+    // Show category field for SPP, IKK, and Uang Pangkal
+    if (['SPP', 'IKK', 'Uang Pangkal'].includes(jenis)) {
+        kategoriField.style.display = 'block';
+    }
+    
+    // Handle class levels for specific fee types
+    if (['THB', 'UAM', 'Foto'].includes(jenis)) {
+        tingkatField.style.display = 'block';
+        tingkatSelect.innerHTML = '<option value="">Pilih Tingkat</option>';
+        
+        // Set available classes based on fee type
+        let classes = [];
+        if (jenis === 'THB') {
+            classes = ['2', '3', '4', '5', '6', '7']; // Level 2-7 (Grade 1-6)
+        } else if (jenis === 'UAM') {
+            classes = ['7']; // Level 7 (Grade 6)
+        } else if (jenis === 'Foto') {
+            classes = ['1', '7']; // Level 1 & 7 (TK & Grade 6)
+        }
+        
+        classes.forEach(kelas => {
+            const levelText = kelas === '1' ? '1 (TK)' : kelas;
+            tingkatSelect.add(new Option(levelText, kelas));
+        });
+    }
 });
 </script>
 @endsection

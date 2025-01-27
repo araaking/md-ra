@@ -33,12 +33,21 @@ return new class extends Migration
             $table->enum('kategori_siswa', [
                 'Anak Guru',
                 'Anak Yatim',
+                'Anak Yatim Kakak Beradik', // Added for IKK category
                 'Kakak Beradik',
                 'Anak Normal'
             ])->nullable();
             
-            // Tingkat kelas (hanya untuk THB)
-            $table->integer('tingkat')->nullable()->comment('Hanya untuk biaya THB');
+            // Tingkat kelas
+            $table->enum('tingkat', [
+                'TK',
+                '1',
+                '2',
+                '3',
+                '4',
+                '5',
+                '6'
+            ])->nullable();
             
             // Jumlah biaya
             $table->decimal('jumlah', 15, 2);
