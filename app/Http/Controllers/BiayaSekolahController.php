@@ -30,8 +30,8 @@ class BiayaSekolahController extends Controller
     {
         $request->validate([
             'jenis_biaya' => 'required|in:SPP,IKK,THB,UAM,Wisuda,Uang Pangkal,Raport,Seragam,Foto',
-            'kategori_siswa' => 'required_if:jenis_biaya,SPP,IKK|nullable|in:Anak Guru,Anak Yatim,Kakak Beradik,Anak Normal',
-            'tingkat' => 'required_if:jenis_biaya,THB|nullable|integer|min:1',
+            'kategori_siswa' => 'required_if:jenis_biaya,SPP,IKK,Uang Pangkal|nullable|in:Anak Guru,Anak Yatim,Kakak Beradik,Anak Normal',
+            'tingkat' => 'required_if:jenis_biaya,THB,UAM,Foto|nullable|integer|min:1|max:7',
             'jumlah' => 'required|numeric|min:0',
             'keterangan' => 'nullable|string'
         ]);

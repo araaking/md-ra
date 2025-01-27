@@ -99,16 +99,25 @@ document.getElementById('jenis_biaya').addEventListener('change', function() {
         // Set available classes based on fee type
         let classes = [];
         if (jenis === 'THB') {
-            classes = ['2', '3', '4', '5', '6', '7']; // Level 2-7 (Grade 1-6)
+            classes = [
+                {value: '2', label: 'Kelas 1'},
+                {value: '3', label: 'Kelas 2'},
+                {value: '4', label: 'Kelas 3'},
+                {value: '5', label: 'Kelas 4'},
+                {value: '6', label: 'Kelas 5'},
+                {value: '7', label: 'Kelas 6'}
+            ];
         } else if (jenis === 'UAM') {
-            classes = ['7']; // Level 7 (Grade 6)
+            classes = [{value: '7', label: 'Kelas 6'}];
         } else if (jenis === 'Foto') {
-            classes = ['1', '7']; // Level 1 & 7 (TK & Grade 6)
+            classes = [
+                {value: '1', label: 'TK'},
+                {value: '7', label: 'Kelas 6'}
+            ];
         }
         
         classes.forEach(kelas => {
-            const levelText = kelas === '1' ? '1 (TK)' : kelas;
-            tingkatSelect.add(new Option(levelText, kelas));
+            tingkatSelect.add(new Option(kelas.label, kelas.value));
         });
     }
 });

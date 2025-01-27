@@ -42,13 +42,16 @@
                         <!-- Tingkat -->
                         <div class="mb-3">
                             <label for="tingkat" class="form-label">Tingkat <span class="text-danger">*</span></label>
-                            <input type="number" 
-                                   id="tingkat" 
-                                   name="tingkat" 
-                                   class="form-control @error('tingkat') is-invalid @enderror" 
-                                   value="{{ old('tingkat', $kelas->tingkat) }}"
-                                   min="1"
-                                   required>
+                            <select id="tingkat" name="tingkat" class="form-select @error('tingkat') is-invalid @enderror" required>
+                                <option value="">Pilih Tingkat</option>
+                                <option value="1" {{ old('tingkat', $kelas->tingkat) == 1 ? 'selected' : '' }}>1 (TK)</option>
+                                <option value="2" {{ old('tingkat', $kelas->tingkat) == 2 ? 'selected' : '' }}>2 (Kelas 1)</option>
+                                <option value="3" {{ old('tingkat', $kelas->tingkat) == 3 ? 'selected' : '' }}>3 (Kelas 2)</option>
+                                <option value="4" {{ old('tingkat', $kelas->tingkat) == 4 ? 'selected' : '' }}>4 (Kelas 3)</option>
+                                <option value="5" {{ old('tingkat', $kelas->tingkat) == 5 ? 'selected' : '' }}>5 (Kelas 4)</option>
+                                <option value="6" {{ old('tingkat', $kelas->tingkat) == 6 ? 'selected' : '' }}>6 (Kelas 5)</option>
+                                <option value="7" {{ old('tingkat', $kelas->tingkat) == 7 ? 'selected' : '' }}>7 (Kelas 6)</option>
+                            </select>
                             @error('tingkat')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror

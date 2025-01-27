@@ -39,15 +39,8 @@ return new class extends Migration
             ])->nullable();
             
             // Tingkat kelas
-            $table->enum('tingkat', [
-                'TK',
-                '1',
-                '2',
-                '3',
-                '4',
-                '5',
-                '6'
-            ])->nullable();
+            $table->integer('tingkat')->nullable()
+                ->comment('1=TK, 2-7=Grade 1-6');
             
             // Jumlah biaya
             $table->decimal('jumlah', 15, 2);

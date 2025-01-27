@@ -34,11 +34,11 @@ class BiayaSekolah extends Model
     {
         switch ($jenisBiaya) {
             case 'THB':
-                return ['1', '2', '3', '4', '5', '6'];
+                return ['2', '3', '4', '5', '6', '7']; // Updated for new level system
             case 'UAM':
-                return ['6'];
+                return ['7']; // Grade 6 is now level 7
             case 'Foto':
-                return ['TK', '6'];
+                return ['1', '7']; // 1=TK, 7=Grade 6
             default:
                 return [];
         }

@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('kelas', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->integer('tingkat')->unsigned(); // Make it unsigned to allow 0
+            $table->integer('tingkat')->unsigned()->comment('1=TK, 2-7=Grade 1-6'); // Updated comment
             $table->foreignId('next_class_id')
                 ->nullable()
                 ->constrained('kelas')

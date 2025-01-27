@@ -42,14 +42,16 @@
                         <!-- Tingkat -->
                         <div class="mb-3">
                             <label for="tingkat" class="form-label">Tingkat <span class="text-danger">*</span></label>
-                            <input type="number" 
-                                   id="tingkat" 
-                                   name="tingkat" 
-                                   class="form-control @error('tingkat') is-invalid @enderror" 
-                                   placeholder="Contoh: 1"
-                                   value="{{ old('tingkat') }}"
-                                   min="1"
-                                   required>
+                            <select id="tingkat" name="tingkat" class="form-select @error('tingkat') is-invalid @enderror" required>
+                                <option value="">Pilih Tingkat</option>
+                                <option value="1">1 (TK)</option>
+                                <option value="2">2 (Kelas 1)</option>
+                                <option value="3">3 (Kelas 2)</option>
+                                <option value="4">4 (Kelas 3)</option>
+                                <option value="5">5 (Kelas 4)</option>
+                                <option value="6">6 (Kelas 5)</option>
+                                <option value="7">7 (Kelas 6)</option>
+                            </select>
                             @error('tingkat')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror

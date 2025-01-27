@@ -33,7 +33,7 @@ class KelasController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'tingkat' => 'required|integer|min:0|max:6' // Updated validation rule
+            'tingkat' => 'required|integer|min:1|max:7' // Updated validation rule
         ]);
 
         Kelas::create($request->all());
@@ -59,7 +59,7 @@ class KelasController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'tingkat' => 'required|integer|min:0|max:6' // Updated validation rule
+            'tingkat' => 'required|integer|min:1|max:7' // Updated validation rule
         ]);
 
         $kelas = Kelas::findOrFail($id);

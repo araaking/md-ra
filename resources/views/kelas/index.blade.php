@@ -31,7 +31,20 @@
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $item->name }}</td>
-                                <td>{{ $item->tingkat }}</td>
+                                <td>
+                                    @php
+                                        $tingkatLabels = [
+                                            1 => 'TK',
+                                            2 => 'Kelas 1',
+                                            3 => 'Kelas 2',
+                                            4 => 'Kelas 3',
+                                            5 => 'Kelas 4',
+                                            6 => 'Kelas 5',
+                                            7 => 'Kelas 6'
+                                        ];
+                                    @endphp
+                                    {{ $tingkatLabels[$item->tingkat] ?? $item->tingkat }}
+                                </td>
                                 <td>
                                     @if($item->nextClass)
                                         {{ $item->nextClass->name }} (Tingkat {{ $item->nextClass->tingkat }})
