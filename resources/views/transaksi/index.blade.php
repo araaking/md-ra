@@ -3,30 +3,100 @@
 @section('title', 'Daftar Transaksi')
 
 @section('content')
-<div class="container-fluid">
+<div class="container-fluid mt-4">
     <div class="row">
         <div class="col-md-12">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-                
+            <!-- Summary Cards -->
+            <div class="row mb-4">
+                <!-- Total Simpanan Card -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="widget-first">
+                                <div class="d-flex align-items-center mb-2">
+                                    <div class="p-2 border border-success border-opacity-10 bg-success-subtle rounded-2 me-2">
+                                        <div class="bg-success rounded-circle widget-size text-center">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+                                                <path fill="#ffffff" d="M5 6h14v2H5V6m0 4h14v2H5v-2m0 4h14v2H5v-2m0 4h14v2H5v-2Z"/>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                    <p class="mb-0 text-dark fs-15">Total Simpanan</p>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h3 class="mb-0 fs-22 text-dark me-3">Rp {{ number_format($totalSimpanan, 0, ',', '.') }}</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+
+                <!-- Total Cicilan Card -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="widget-first">
+                                <div class="d-flex align-items-center mb-2">
+                                    <div class="p-2 border border-info border-opacity-10 bg-info-subtle rounded-2 me-2">
+                                        <div class="bg-info rounded-circle widget-size text-center">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+                                                <path fill="#ffffff" d="M3 6h18v12H3V6m9 3a3 3 0 0 1 3 3a3 3 0 0 1-3 3a3 3 0 0 1-3-3a3 3 0 0 1 3-3M7 8a2 2 0 0 1-2 2v4a2 2 0 0 1 2 2h10a2 2 0 0 1 2-2v-4a2 2 0 0 1-2-2H7Z"/>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                    <p class="mb-0 text-dark fs-15">Total Cicilan</p>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h3 class="mb-0 fs-22 text-dark me-3">Rp {{ number_format($totalCicilan, 0, ',', '.') }}</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Total Penarikan Card -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="widget-first">
+                                <div class="d-flex align-items-center mb-2">
+                                    <div class="p-2 border border-warning border-opacity-10 bg-warning-subtle rounded-2 me-2">
+                                        <div class="bg-warning rounded-circle widget-size text-center">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+                                                <path fill="#ffffff" d="M11 8c0 2.21-1.79 4-4 4s-4-1.79-4-4s1.79-4 4-4s4 1.79 4 4m0 6.72V20H0v-2c0-2.21 3.13-4 7-4c1.5 0 2.87.27 4 .72M24 20H13V3h11v17m-8-8.5a2.5 2.5 0 0 1 5 0a2.5 2.5 0 0 1-5 0M22 7a2 2 0 0 1-2-2h-3c0 1.11-.89 2-2 2v9a2 2 0 0 1 2 2h3c0-1.1.9-2 2-2V7Z"/>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                    <p class="mb-0 text-dark fs-15">Total Penarikan</p>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h3 class="mb-0 fs-22 text-dark me-3">Rp {{ number_format($totalPenarikan, 0, ',', '.') }}</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Transaction List Card -->
             <div class="card overflow-hidden">
                 <div class="card-header">
-                    <div class="d-flex align-items-center">
-                        <h5 class="card-title mb-0">Daftar Transaksi</h5>
-                        <div class="ms-auto">
+                    <div class="d-flex flex-column flex-md-row align-items-md-center">
+                        <h5 class="card-title mb-3 mb-md-0">Daftar Transaksi</h5>
+                        <div class="ms-md-auto d-flex flex-wrap gap-2">
                             <a href="{{ request()->fullUrlWithQuery(['jenis' => 'simpanan']) }}" 
-                               class="btn btn-sm btn-success me-2 {{ request()->input('jenis') === 'simpanan' ? 'active' : '' }}">
+                               class="btn btn-sm btn-success {{ request()->input('jenis') === 'simpanan' ? 'active' : '' }}">
                                 <i class="mdi mdi-cash me-1"></i> Simpanan
                             </a>
                             <a href="{{ request()->fullUrlWithQuery(['jenis' => 'cicilan']) }}" 
-                               class="btn btn-sm btn-info me-2 {{ request()->input('jenis') === 'cicilan' ? 'active' : '' }}">
+                               class="btn btn-sm btn-info {{ request()->input('jenis') === 'cicilan' ? 'active' : '' }}">
                                 <i class="mdi mdi-cash-multiple me-1"></i> Cicilan
                             </a>
                             <a href="{{ request()->fullUrlWithQuery(['jenis' => 'penarikan']) }}" 
-                               class="btn btn-sm btn-warning me-2 {{ request()->input('jenis') === 'penarikan' ? 'active' : '' }}">
+                               class="btn btn-sm btn-warning {{ request()->input('jenis') === 'penarikan' ? 'active' : '' }}">
                                 <i class="mdi mdi-cash-remove me-1"></i> Penarikan
                             </a>
-                            <a href="{{ route('transaksi.create') }}" class="btn btn-sm btn-primary me-2">
+                            <a href="{{ route('transaksi.create') }}" class="btn btn-sm btn-primary">
                                 <i class="mdi mdi-plus me-1"></i> Tambah Transaksi
                             </a>
                             <a href="{{ route('transaksi.penarikan.create') }}" class="btn btn-sm btn-danger">
@@ -64,20 +134,24 @@
                                     <td>{{ $transaksi->tanggal->format('d/m/Y H:i:s') }}</td>
                                     <td>{{ $transaksi->keterangan }}</td>
                                     <td>
-                                        <a href="{{ route('transaksi.edit', $transaksi->id) }}" 
-                                           class="btn btn-icon btn-sm bg-primary-subtle me-1" 
-                                           data-bs-toggle="tooltip" title="Edit">
-                                            <i class="mdi mdi-pencil-outline fs-14 text-primary"></i>
-                                        </a>
-                                        <form action="{{ route('transaksi.destroy', $transaksi->id) }}" method="POST" class="d-inline">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" 
-                                                    class="btn btn-icon btn-sm bg-danger-subtle" 
-                                                    data-bs-toggle="tooltip" title="Delete">
-                                                <i class="mdi mdi-delete fs-14 text-danger"></i>
-                                            </button>
-                                        </form>
+                                        <div class="d-flex gap-1">
+                                            <a href="{{ route('transaksi.edit', $transaksi->id) }}" 
+                                               class="btn btn-icon btn-sm bg-primary-subtle" 
+                                               data-bs-toggle="tooltip" 
+                                               title="Edit">
+                                                <i class="mdi mdi-pencil-outline fs-14 text-primary"></i>
+                                            </a>
+                                            <form action="{{ route('transaksi.destroy', $transaksi->id) }}" method="POST">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" 
+                                                        class="btn btn-icon btn-sm bg-danger-subtle" 
+                                                        data-bs-toggle="tooltip" 
+                                                        title="Delete">
+                                                    <i class="mdi mdi-delete fs-14 text-danger"></i>
+                                                </button>
+                                            </form>
+                                        </div>
                                     </td>
                                 </tr>
                                 @empty
@@ -90,18 +164,16 @@
                     </div>
                 </div>
 
-                <div class="card-footer py-0 border-top">
+                <div class="card-footer py-2">
                     <div class="row align-items-center">
                         <div class="col-sm">
-                            <div class="text-block text-center text-sm-start">
-                                @if ($transaksis->count() > 0)
-                                <span class="fw-medium">
-                                    Showing {{ $transaksis->count() }} of {{ $transaksis->total() }}
-                                </span>
-                                @endif
+                            @if ($transaksis->count() > 0)
+                            <div class="text-muted">
+                                Showing {{ $transaksis->count() }} of {{ $transaksis->total() }} entries
                             </div>
+                            @endif
                         </div>
-                        <div class="col-sm-auto mt-3 mt-sm-0">
+                        <div class="col-sm-auto">
                             {{ $transaksis->links('pagination::bootstrap-4') }}
                         </div>
                     </div>

@@ -11,20 +11,45 @@ use Illuminate\Http\Request;
 class TransaksiController extends Controller
 {
     // Menampilkan daftar semua transaksi
-    public function index(Request $request)
-        {
-            $query = Transaksi::with(['bukuTabungan.siswa.kelas']);
+    public function index()
+    {
+        // Get current school year
+        $tahunAjaran = TahunAjaran::where('is_active', true)->first();
         
-            // Filter by specific transaction type if specified
-            if ($request->has('jenis') && in_array($request->jenis, ['simpanan', 'cicilan', 'penarikan'])) {
-                $query->where('jenis', $request->jenis);
-            }
-            
-            $transaksis = $query->orderBy('tanggal', 'desc')
-                ->paginate(10);
+        // Calculate totals for the active school year
+        $totalSimpanan = Transaksi::whereHas('bukuTabungan', function($query) use ($tahunAjaran) {
+            $query->where('tahun_ajaran_id', $tahunAjaran->id);
+        })
+        ->where('jenis', 'simpanan')
+        ->sum('jumlah');
         
-            return view('transaksi.index', compact('transaksis'));
-        }
+        $totalCicilan = Transaksi::whereHas('bukuTabungan', function($query) use ($tahunAjaran) {
+            $query->where('tahun_ajaran_id', $tahunAjaran->id);
+        })
+        ->where('jenis', 'cicilan')
+        ->sum('jumlah');
+        
+        $totalPenarikan = Transaksi::whereHas('bukuTabungan', function($query) use ($tahunAjaran) {
+            $query->where('tahun_ajaran_id', $tahunAjaran->id);
+        })
+        ->where('jenis', 'penarikan')
+        ->sum('jumlah');
+    
+        // Get paginated transactions
+        $transaksis = Transaksi::with(['bukuTabungan.siswa.kelas'])
+            ->when(request('jenis'), function($query, $jenis) {
+                return $query->where('jenis', $jenis);
+            })
+            ->latest()
+            ->paginate(10);
+    
+        return view('transaksi.index', compact(
+            'transaksis',
+            'totalSimpanan',
+            'totalCicilan',
+            'totalPenarikan'
+        ));
+    }
 
     // Form transaksi simpanan & cicilan
     public function create(Request $request)

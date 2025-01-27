@@ -63,13 +63,19 @@
                 <li class="menu-title">Keuangan</li>
                 <li>
                     <a href="{{ route('transaksi.index') }}" class="tp-link">
-                        <i data-feather="dollar-sign"></i>
-                        <span>Data Tabungan</span>
+                        <i data-feather="credit-card"></i>
+                        <span>Data Transaksi</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('transaksi.create') }}" class="tp-link">
+                        <i data-feather="save"></i>
+                        <span>Simpanan/Cicilan</span>
                     </a>
                 </li>
                 <li>
                     <a href="{{ route('transaksi.penarikan.create') }}" class="tp-link">
-                        <i data-feather="dollar-sign"></i>
+                        <i data-feather="download"></i>
                         <span>Penarikan/Pinjaman</span>
                     </a>
                 </li>
