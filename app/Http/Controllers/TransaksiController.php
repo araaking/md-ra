@@ -205,4 +205,28 @@ class TransaksiController extends Controller
         return redirect()->route('transaksi.index')
             ->with('success', 'Transaksi berhasil dihapus!');
     }
+
+    public function edit(Transaksi $transaksi)
+    {
+        return view('transaksi.edit', compact('transaksi'));
+    }
+
+    public function update(Request $request, Transaksi $transaksi)
+    {
+        $request->validate([
+            'jumlah' => 'required|numeric|min:1',
+            'tanggal' => 'required|date',
+            'keterangan' => 'nullable|string|max:255',
+        ]);
+    
+        $transaksi->update([
+            'jumlah' => $request->jumlah,
+            'tanggal' => $request->tanggal,
+            'keterangan' => $request->keterangan,
+        ]);
+    
+        return redirect()
+            ->route('transaksi.index')
+            ->with('success', 'Transaksi berhasil diperbarui');
+    }
 }

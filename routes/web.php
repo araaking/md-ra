@@ -53,6 +53,7 @@ Route::middleware('auth')->group(function () {
 
     // Resource Transaksi (setelah penarikan)
     Route::resource('transaksi', TransaksiController::class);
+    Route::resource('transaksi', TransaksiController::class);
 
     /* ----- Route Khusus AJAX ----- */
     Route::get('/kelas/{kelas}/siswa', [SiswaController::class, 'getSiswaByKelas'])
