@@ -134,10 +134,12 @@
                         <form action="{{ route('dashboard') }}" method="GET" class="ms-auto d-flex align-items-center gap-2">
                             <!-- Filter Kelas -->
                             <select name="kelas" class="form-select form-select-sm">
-                                <option value="">Show All Kelas</option>
-                                <option value="3A" {{ request('kelas') == '3A' ? 'selected' : '' }}>3A</option>
-                                <option value="4A" {{ request('kelas') == '4A' ? 'selected' : '' }}>4A</option>
-                                <!-- Tambahkan opsi kelas lain sesuai kebutuhan -->
+                                <option value="">Semua Kelas</option>
+                                @foreach($kelas as $k)
+                                    <option value="{{ $k->id }}" {{ request('kelas') == $k->id ? 'selected' : '' }}>
+                                        {{ $k->name }}
+                                    </option>
+                                @endforeach
                             </select>
                             <!-- Search: Nama Siswa / Nomor Tabungan -->
                             <input type="text" name="search" class="form-control form-control-sm" placeholder="Search..." value="{{ request('search') }}">

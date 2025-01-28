@@ -6,9 +6,10 @@ use App\Models\Transaksi;
 use App\Models\BukuTabungan;
 use App\Models\Siswa;
 use App\Models\TahunAjaran;
+use App\Models\Kelas;
 use Illuminate\Http\Request;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Carbon\Carbon;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class DashboardController extends Controller
 {
@@ -16,6 +17,9 @@ class DashboardController extends Controller
     {
         // 1. Ambil tahun ajaran aktif
         $tahunAktif = TahunAjaran::where('is_active', true)->firstOrFail();
+        
+        // Add this to get all classes
+        $kelas = Kelas::orderBy('tingkat')->get();
     
         // 2. Setup periode tanggal untuk 7 hari terakhir
         $endDate = Carbon::today()->endOfDay();
@@ -39,15 +43,15 @@ class DashboardController extends Controller
             })
             ->when($request->kelas, function($query, $kelas) {
                 $query->whereHas('siswa', function($q) use ($kelas) {
-                    $q->whereHas('kelas', function($q) use ($kelas) {
-                        $q->where('name', $kelas);
-                    });
+                    $q->where('class_id', $kelas);
                 });
             })
             ->when($request->search, function($query, $search) {
-                $query->whereHas('siswa', function($q) use ($search) {
-                    $q->where('name', 'like', "%{$search}%");
-                })->orWhere('nomor_urut', 'like', "%{$search}%");
+                $query->where(function($q) use ($search) {
+                    $q->whereHas('siswa', function($sq) use ($search) {
+                        $sq->where('name', 'like', "%{$search}%");
+                    })->orWhere('nomor_urut', 'like', "%{$search}%");
+                });
             })
             ->with(['siswa.kelas', 'transaksis'])
             ->get()
@@ -91,7 +95,8 @@ class DashboardController extends Controller
             'totalCicilan',
             'totalPendapatan',
             'totalSiswa',
-            'bukuTabungans'
+            'bukuTabungans',
+            'kelas' // Add this
         ));
     }
 

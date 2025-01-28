@@ -13,14 +13,25 @@ use Illuminate\Database\Query\Builder;
 class BukuTabunganController extends Controller
 {
     // Tampilkan semua buku tabungan
-    public function index()
-    {
-        $bukuTabungans = BukuTabungan::with(['siswa', 'tahunAjaran', 'kelas'])
-            ->orderBy('tahun_ajaran_id', 'desc')
-            ->paginate(10);
-
-        return view('buku_tabungan.index', compact('bukuTabungans'));
-    }
+    public function index(Request $request)
+        {
+            // Get active academic year
+            $tahunAktif = TahunAjaran::where('is_active', true)->firstOrFail();
+            
+            // Get all academic years for filter, ordered by year_name instead
+            $tahunAjarans = TahunAjaran::orderBy('year_name', 'desc')->get();
+            
+            // Get selected year or default to active year
+            $selectedYear = $request->tahun_ajaran_id ?? $tahunAktif->id;
+    
+            $bukuTabungans = BukuTabungan::with(['siswa', 'tahunAjaran', 'kelas'])
+                ->where('tahun_ajaran_id', $selectedYear)
+                ->orderBy('class_id')
+                ->orderBy('nomor_urut')
+                ->paginate(10);
+    
+            return view('buku_tabungan.index', compact('bukuTabungans', 'tahunAktif', 'tahunAjarans', 'selectedYear'));
+        }
 
     // Form tambah buku tabungan
     public function create(Request $request)

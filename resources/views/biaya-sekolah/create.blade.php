@@ -25,6 +25,7 @@
                                     <option value="Wisuda">Wisuda</option>
                                     <option value="Uang Pangkal">Uang Pangkal</option>
                                     <option value="Raport">Raport</option>
+                                    <option value="Seragam">Seragam</option>
                                     <option value="Foto">Foto</option>
                                 </select>
                             </div>
@@ -49,10 +50,7 @@
                         </div>
 
                         <div class="col-lg-6">
-                            <div class="mb-3" id="tingkatField" style="display: none;">
-                                <label for="tingkat" class="form-label">Tingkat Kelas</label>
-                                <input type="number" name="tingkat" class="form-control" min="1" placeholder="Contoh: 1">
-                            </div>
+                            <!-- Remove the duplicate tingkatField div here -->
 
                             <div class="mb-3">
                                 <label for="jumlah" class="form-label">Jumlah (Rp)</label>

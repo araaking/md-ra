@@ -9,10 +9,25 @@
             <div class="card overflow-hidden">
                 <div class="card-header">
                     <div class="d-flex align-items-center">
-                        <h5 class="card-title mb-0">Daftar Buku Tabungan</h5>
-                        <a href="{{ route('buku-tabungan.create') }}" class="btn btn-sm btn-success ms-auto">
-                            <i class="mdi mdi-plus-circle-outline me-1"></i> Tambah Buku
-                        </a>
+                        <div>
+                            <h5 class="card-title mb-0">Daftar Buku Tabungan</h5>
+                            <small class="text-muted">Tahun Ajaran: {{ $tahunAktif->year_name }}</small>
+                        </div>
+                        <div class="ms-auto d-flex gap-2">
+                            <form action="{{ route('buku-tabungan.index') }}" method="GET" class="d-flex gap-2">
+                                <select name="tahun_ajaran_id" class="form-select form-select-sm" onchange="this.form.submit()">
+                                    @foreach($tahunAjarans as $tahun)
+                                        <option value="{{ $tahun->id }}" {{ $selectedYear == $tahun->id ? 'selected' : '' }}>
+                                            {{ $tahun->year_name }}
+                                            @if($tahun->is_active) (Aktif) @endif
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </form>
+                            <a href="{{ route('buku-tabungan.create') }}" class="btn btn-sm btn-success">
+                                <i class="mdi mdi-plus-circle-outline me-1"></i> Tambah Buku
+                            </a>
+                        </div>
                     </div>
                 </div>
                 <div class="card-body p-0">
