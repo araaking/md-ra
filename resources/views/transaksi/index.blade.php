@@ -103,7 +103,18 @@
                 <div class="card-header">
                     <div class="d-flex flex-column flex-md-row align-items-md-center">
                         <h5 class="card-title mb-3 mb-md-0">Daftar Transaksi</h5>
-                        <div class="ms-md-auto d-flex flex-wrap gap-2">
+                        <div class="ms-md-auto d-flex flex-wrap gap-2 align-items-center">
+                            <!-- Academic Year Filter -->
+                            <form action="{{ route('transaksi.index') }}" method="GET" class="d-flex align-items-center me-2">
+                                <select name="tahun_ajaran_id" class="form-select form-select-sm" onchange="this.form.submit()">
+                                    @foreach ($allTahunAjaran as $tahun)
+                                        <option value="{{ $tahun->id }}" {{ $selectedTahun->id == $tahun->id ? 'selected' : '' }}>
+                                            {{ $tahun->year_name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </form>
+
                             <a href="{{ request()->fullUrlWithQuery(['jenis' => 'simpanan']) }}" 
                                class="btn btn-sm btn-success {{ request()->input('jenis') === 'simpanan' ? 'active' : '' }}">
                                 <i class="mdi mdi-cash me-1"></i> Simpanan

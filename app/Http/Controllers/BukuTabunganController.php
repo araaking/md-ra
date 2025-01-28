@@ -117,41 +117,27 @@ class BukuTabunganController extends Controller
     }
 
     // Update buku tabungan
-    public function update(Request $request, $id)
+    public function update(Request $request, BukuTabungan $bukuTabungan)
     {
-        $bukuTabungan = BukuTabungan::findOrFail($id);
-
         $request->validate([
-            'kelas_id'    => 'required|exists:kelas,id',
-            'siswa_id'    => [
-                'required',
-                'exists:siswa,id',
-                // Ignore data saat ini saat validasi unik
-                Rule::unique('buku_tabungan')->ignore($id)->where(function ($query) use ($request) {
-                    return $query->where('tahun_ajaran_id', $request->tahun_ajaran_id);
-                })
-            ],
-            'tahun_ajaran_id' => 'required|exists:tahun_ajaran,id',
             'nomor_urut' => [
                 'required',
-                'integer',
-                // Ignore data saat ini
-                Rule::unique('buku_tabungan')->ignore($id)->where(function ($query) use ($request) {
-                    return $query->where('class_id', $request->kelas_id)
-                        ->where('tahun_ajaran_id', $request->tahun_ajaran_id);
-                })
+                'numeric',
+                'min:1',
+                Rule::unique('buku_tabungan')
+                    ->where('tahun_ajaran_id', $bukuTabungan->tahun_ajaran_id)
+                    ->where('class_id', $bukuTabungan->class_id)  // Changed from kelas_id to class_id
+                    ->ignore($bukuTabungan->id)
             ],
         ]);
-
+    
         $bukuTabungan->update([
-            'siswa_id'         => $request->siswa_id,
-            'class_id'         => $request->kelas_id,
-            'tahun_ajaran_id'  => $request->tahun_ajaran_id,
-            'nomor_urut'       => $request->nomor_urut
+            'nomor_urut' => $request->nomor_urut,
         ]);
-
-        return redirect()->route('buku-tabungan.index')
-            ->with('success', 'Buku tabungan berhasil diperbarui!');
+    
+        return redirect()
+            ->route('buku-tabungan.index')
+            ->with('success', 'Nomor buku tabungan berhasil diperbarui');
     }
 
     // Hapus buku tabungan

@@ -51,6 +51,7 @@
                                                data-bs-toggle="tooltip" title="Edit">
                                                 <i class="mdi mdi-pencil-outline fs-14 text-warning"></i>
                                             </a>
+                                            <!-- Remove the duplicate edit button that was here -->
                                             <form action="{{ route('buku-tabungan.destroy', $bukuTabungan->id) }}" 
                                                   method="POST" 
                                                   class="d-inline"

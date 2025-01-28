@@ -70,7 +70,7 @@
                 <li>
                     <a href="{{ route('transaksi.create') }}" class="tp-link">
                         <i data-feather="save"></i>
-                        <span>Simpanan/Cicilan</span>
+                        <span>Tabungan/Cicilan</span>
                     </a>
                 </li>
                 <li>
